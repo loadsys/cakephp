@@ -145,7 +145,6 @@ class Validation {
  * @return bool Success
  */
 	public static function blank($check) {
-		trigger_error('Validation::blank() is deprecated.');
 		if (is_array($check)) {
 			extract(self::_defaults($check));
 		}
