@@ -323,8 +323,8 @@ class PaginatorComponent extends Component
             $inWhitelist = in_array($field, $options['sortWhitelist'], true);
             if (!$inWhitelist) {
                 $options['order'] = [];
+                return $options;
             }
-            return $options;
         }
 
         $tableAlias = $object->alias();
