@@ -773,11 +773,12 @@ class View implements EventDispatcherInterface
      *
      *
      */
-    public function decorateEntities() {
+    public function decorateEntities()
+    {
         foreach($this->viewVars as $name => $var) {
             if (is_object($var)) {
                 if ($var instanceof \Cake\ORM\Entity) {
-debug('ENTITY');
+                    $this->viewVars[$name] = new \App\View\Presenter\UserPresenter($var);
                     continue;
                 }
                 if ($var instanceof \Cake\ORM\ResultSet) {

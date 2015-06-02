@@ -14,13 +14,6 @@ class Presenter {
     protected $_entity;
 
     /**
-     * Holds all properties and their values for this presenter
-     *
-     * @var array
-     */
-    protected $_properties = [];
-
-    /**
      * Holds the name of the class for the instance object
      *
      * @var string
@@ -34,13 +27,19 @@ class Presenter {
      */
     protected static $_accessors = [];
 
-    public function __construct(Entity $entity) {
+    /**
+     * Map of aliases to entity properties
+     *
+     * @var array
+     */
+    public $propertyMap = [];
+
+    public function __construct(Entity $entity)
+    {
         $this->_entity = $entity;
-        $this->_properties = $this->_entity->_properties;
-        return $this->_entity;
     }
 
-    public function &__get($property)
+    public function __get($property)
     {
         return $this->get($property);
     }
@@ -50,27 +49,21 @@ class Presenter {
      *
      * @param string $property the name of the property to retrieve
      * @return mixed
-     * @throws \InvalidArgumentException if an empty property name is passed
      */
-    public function &get($property)
+    public function get($property)
     {
-        if (!strlen((string)$property)) {
-            throw new InvalidArgumentException('Cannot get an empty property');
+        $value = $this->_entity->$property;
+        if (isset($this->propertyMap[$property])) {
+            $alias = $this->propertyMap[$property];
+            $value = $this->$alias;
         }
 
-        $value = null;
         $method = '_get' . Inflector::camelize($property);
 
-        if (isset($this->_properties[$property])) {
-            $value =& $this->_properties[$property];
-        }
-
         if ($this->_methodExists($method)) {
-            $result = $this->{$method}($value);
-            return $result;
+            return $this->{$method}($value);
         }
-        $this->$property = $this->_entity->$property;
-        return $this->$property;
+        return $value;
     }
 
     /**
