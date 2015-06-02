@@ -37,6 +37,7 @@ class Presenter {
     public function __construct(Entity $entity)
     {
         $this->_entity = $entity;
+        $this->_className = get_class($this);
     }
 
     public function __get($property)
